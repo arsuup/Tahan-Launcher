@@ -6,6 +6,7 @@ dist
 node-v*
 data
 start.bat
+start.vbs
 .DS_Store
 /Fahran-Launcher-WEB-Folder
 /.github
