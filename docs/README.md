@@ -1,6 +1,6 @@
 <p align="center"><img src="../src/assets/images/icon/icon.png" alt="icon-launcher"></p>
 
-<h1 align="center">Tahan Launcher (Fork by Luuxis)</h1>
+<h1 align="center">Tahan Launcher (Fork of Selvania-Launcher)</h1>
 
 ### **<ins><p align="center">Téléchargement :</p>**
 
