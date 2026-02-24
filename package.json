@@ -1,7 +1,7 @@
 {
     "name": "tahan-launcher",
     "preductname": "Tahan Launcher",
-    "version": "1.1.1",
+    "version": "1.1.11",
     "description": "Launcher minecraft par Arsuup pour events",
     "main": "src/app.js",
     "author": {
@@ -9,7 +9,7 @@
         "email": "contact@luuxis.fr",
         "url": "https://github.com/luuxis"
     },
-    "url": "${URL}",
+    "url": "${API_URL}",
     "scripts": {
         "start": "cross-env-shell NODE_ENV=dev electron .",
         "dev": "cross-env-shell DEV_TOOL=open nodemon --exec npm start",
