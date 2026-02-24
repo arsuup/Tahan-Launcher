@@ -55,7 +55,7 @@ jobs:
       - name: Inject API URL
         run: |
           jq --arg url "${{ secrets.API_URL }}" '.url = $url' package.json > tmp.json
-          mv tmp.json package.json
+          mv -Force tmp.json package.json
 
       - name: Build
         env:
