@@ -40,7 +40,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18.x
+          node-version: 20
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -53,9 +53,11 @@ jobs:
 
         
       - name: Inject API URL
+        shell: bash
         run: |
-          jq --arg url "${{ secrets.API_URL }}" '.url = $url' package.json > tmp.json
-          mv -Force tmp.json package.json
+          jq --arg url "${{ secrets.API_URL }}" '.url = $url' package.json > package.tmp.json
+          cat package.tmp.json > package.json
+          rm package.tmp.json
 
       - name: Build
         env:
