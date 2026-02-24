@@ -51,6 +51,12 @@ jobs:
         run: npm ci
         shell: bash
 
+        
+      - name: Inject API URL
+        run: |
+          jq --arg url "${{ secrets.API_URL }}" '.url = $url' package.json > tmp.json
+          mv tmp.json package.json
+
       - name: Build
         env:
           GH_TOKEN: ${{ secrets.github_token }}
