@@ -234,13 +234,19 @@
     color: var(--color);
     font-size: 1rem;
     text-align: center;
-    padding: 10% 0.8rem;
+    padding-left: 0.2rem;
+    padding-right: 0.3rem;
     cursor: pointer;
     transition: var(--fast-transition);
 }
 
 .instance-select:hover {
     background: var(--background-element);
+}
+
+.instance-select::before {
+    width:2rem;
+    height:2rem;
 }
 
 .info-starting-game {
@@ -312,9 +318,13 @@
     transition: var(--fast-transition);
     cursor: pointer;
 }
+.close-popup:before {
+    width: 23px;
+    height: 23px
+}
 
 .instances-tab p {
-    margin-top: 1rem;
+    margin-top: 0.4rem;
     font-size: 2rem;
 }
 

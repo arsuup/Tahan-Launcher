@@ -48,82 +48,109 @@ class Settings {
 
     accounts() {
         document.querySelector('.accounts-list').addEventListener('click', async e => {
-            let popupAccount = new popup()
+            const accountCard = e.target.closest('.account');
+            if (!accountCard) return;
+
+            const id = accountCard.id;
+            const popupAccount = new popup();
+
             try {
-                let id = e.target.id
-                if (e.target.classList.contains('account')) {
-                    popupAccount.openPopup({
-                        title: 'Connexion',
-                        content: 'Veuillez patienter...',
-                        color: 'var(--color)'
-                    })
-
-                    if (id == 'add') {
-                        document.querySelector('.cancel-home').style.display = 'inline'
-                        return changePanel('login')
-                    }
-
-                    let account = await this.db.readData('accounts', id);
-                    let configClient = await this.setInstance(account);
-                    await accountSelect(account);
-                    configClient.account_selected = account.ID;
-                    return await this.db.updateData('configClient', configClient);
+                if (id === 'add') {
+                    document.querySelector('.cancel-home').style.display = 'inline';
+                    return changePanel('login');
                 }
 
-                if (e.target.classList.contains("delete-profile")) {
+                if (e.target.closest('.copy-id')) {
+                    const val = e.target.closest('.copy-id').getAttribute('data-name');
+                    if (val) await navigator.clipboard.writeText(val);
+                    return;
+                }
+
+                let rawAccount = await this.db.readData('accounts', id);
+                if (!rawAccount) rawAccount = await this.db.readData('accounts', parseInt(id));
+                
+                let account = Array.isArray(rawAccount) ? rawAccount[0] : rawAccount;
+                if (!account) throw new Error("Compte non trouvé dans la DB");
+
+                if (e.target.closest('.delete-profile')) {
                     popupAccount.openPopup({
-                        title: 'Connexion',
+                        title: 'Suppression',
                         content: 'Veuillez patienter...',
                         color: 'var(--color)'
-                    })
-                    await this.db.deleteData('accounts', id);
-                    let deleteProfile = document.getElementById(`${id}`);
-                    let accountListElement = document.querySelector('.accounts-list');
-                    accountListElement.removeChild(deleteProfile);
+                    });
 
-                    if (accountListElement.children.length == 1) return changePanel('login');
+                    await this.db.deleteData('accounts', id);
+                    accountCard.remove();
+
+                    let accountListElement = document.querySelector('.accounts-list');
+                    if (accountListElement.children.length <= 1) return changePanel('login');
 
                     let configClient = await this.db.readData('configClient');
+                    if (Array.isArray(configClient)) configClient = configClient[0];
 
                     if (configClient.account_selected == id) {
                         let allAccounts = await this.db.readAllData('accounts');
-                        configClient.account_selected = allAccounts[0].ID
-                        accountSelect(allAccounts[0]);
-                        let newInstanceSelect = await this.setInstance(allAccounts[0]);
-                        configClient.instance_select = newInstanceSelect.instance_select
-                        return await this.db.updateData('configClient', configClient);
+                        configClient.account_selected = allAccounts[0].ID;
+                        await accountSelect(allAccounts[0]);
+                        let newInstanceData = await this.setInstance(allAccounts[0]);
+                        configClient.instance_select = newInstanceData.instance_select;
+                        await this.db.updateData('configClient', configClient);
                     }
+                    popupAccount.closePopup();
+                    return;
                 }
+
+                popupAccount.openPopup({
+                    title: 'Connexion',
+                    content: 'Veuillez patienter...',
+                    color: 'var(--color)'
+                });
+
+                let configClient = await this.setInstance(account);
+                await accountSelect(account);
+
+                if (configClient) {
+                    configClient.account_selected = account.ID || account.id;
+                    await this.db.updateData('configClient', configClient);
+                }
+
+                ipcRenderer.send('app-restart');
             } catch (err) {
-                console.error(err)
+                console.error("Erreur compte:", err);
             } finally {
                 popupAccount.closePopup();
             }
-        })
+        });
     }
 
     async setInstance(auth) {
-        let configClient = await this.db.readData('configClient')
-        let instanceSelect = configClient.instance_select
-        let instancesList = await config.getInstanceList()
+        let configData = await this.db.readData('configClient');
+        let configClient = Array.isArray(configData) ? configData[0] : configData;
+        
+        let instanceSelect = configClient.instance_select;
+        let instancesList = await config.getInstanceList() || [];
 
         for (let instance of instancesList) {
             if (instance.whitelistActive) {
-                let whitelist = instance.whitelist.find(whitelist => whitelist == auth.name)
+                let whitelist = (instance.whitelist || []).find(w => w == auth.name);
                 if (whitelist !== auth.name) {
                     if (instance.name == instanceSelect) {
-                        let newInstanceSelect = instancesList.find(i => i.whitelistActive == false)
-                        configClient.instance_select = newInstanceSelect.name
-                        await setStatus(newInstanceSelect.status)
+                        let newInstanceSelect = instancesList.find(i => i.whitelistActive == false);
+                        if (newInstanceSelect) {
+                            configClient.instance_select = newInstanceSelect.name;
+                            await setStatus(newInstanceSelect.status);
+                        }
                     }
                 }
             }
         }
-        return configClient
+        return configClient;
     }
 
     async ram() {
-        let config = await this.db.readData('configClient');
+        let configData = await this.db.readData('configClient');
+        let config = Array.isArray(configData) ? configData[0] : configData;
+
         let totalMem = Math.trunc(os.totalmem() / 1073741824 * 10) / 10;
         let freeMem = Math.trunc(os.freemem() / 1073741824 * 10) / 10;
 
@@ -153,11 +180,12 @@ class Settings {
         maxSpan.setAttribute("value", `${ram.ramMax} Go`);
 
         slider.on("change", async (min, max) => {
-            let config = await this.db.readData('configClient');
+            let cData = await this.db.readData('configClient');
+            let c = Array.isArray(cData) ? cData[0] : cData;
             minSpan.setAttribute("value", `${min} Go`);
             maxSpan.setAttribute("value", `${max} Go`);
-            config.java_config.java_memory = { min: min, max: max };
-            this.db.updateData('configClient', config);
+            c.java_config.java_memory = { min: min, max: max };
+            this.db.updateData('configClient', c);
         });
     }
 
@@ -165,7 +193,9 @@ class Settings {
         let javaPathText = document.querySelector(".java-path-txt")
         javaPathText.textContent = `${await appdata()}/${process.platform == 'darwin' ? this.config.dataDirectory : `.${this.config.dataDirectory}`}/runtime`;
 
-        let configClient = await this.db.readData('configClient')
+        let configData = await this.db.readData('configClient')
+        let configClient = Array.isArray(configData) ? configData[0] : configData;
+
         let javaPath = configClient?.java_config?.java_path || 'Utiliser la version de java livre avec le launcher';
         let javaPathInputTxt = document.querySelector(".java-path-input-text");
         let javaPathInputFile = document.querySelector(".java-path-input-file");
@@ -182,24 +212,28 @@ class Settings {
             });
 
             if (javaPathInputFile.value.replace(".exe", '').endsWith("java") || javaPathInputFile.value.replace(".exe", '').endsWith("javaw")) {
-                let configClient = await this.db.readData('configClient')
+                let cData = await this.db.readData('configClient')
+                let c = Array.isArray(cData) ? cData[0] : cData;
                 let file = javaPathInputFile.files[0].path;
                 javaPathInputTxt.value = file;
-                configClient.java_config.java_path = file
-                await this.db.updateData('configClient', configClient);
+                c.java_config.java_path = file
+                await this.db.updateData('configClient', c);
             } else alert("Le nom du fichier doit être java ou javaw");
         });
 
         document.querySelector(".java-path-reset").addEventListener("click", async () => {
-            let configClient = await this.db.readData('configClient')
+            let cData = await this.db.readData('configClient')
+            let c = Array.isArray(cData) ? cData[0] : cData;
             javaPathInputTxt.value = 'Utiliser la version de java livre avec le launcher';
-            configClient.java_config.java_path = null
-            await this.db.updateData('configClient', configClient);
+            c.java_config.java_path = null
+            await this.db.updateData('configClient', c);
         });
     }
 
     async resolution() {
-        let configClient = await this.db.readData('configClient')
+        let configData = await this.db.readData('configClient')
+        let configClient = Array.isArray(configData) ? configData[0] : configData;
+
         let resolution = configClient?.game_config?.screen_size || { width: 1920, height: 1080 };
 
         let width = document.querySelector(".width-size");
@@ -210,28 +244,32 @@ class Settings {
         height.value = resolution.height;
 
         width.addEventListener("change", async () => {
-            let configClient = await this.db.readData('configClient')
-            configClient.game_config.screen_size.width = width.value;
-            await this.db.updateData('configClient', configClient);
+            let cData = await this.db.readData('configClient')
+            let c = Array.isArray(cData) ? cData[0] : cData;
+            c.game_config.screen_size.width = width.value;
+            await this.db.updateData('configClient', c);
         })
 
         height.addEventListener("change", async () => {
-            let configClient = await this.db.readData('configClient')
-            configClient.game_config.screen_size.height = height.value;
-            await this.db.updateData('configClient', configClient);
+            let cData = await this.db.readData('configClient')
+            let c = Array.isArray(cData) ? cData[0] : cData;
+            c.game_config.screen_size.height = height.value;
+            await this.db.updateData('configClient', c);
         })
 
         resolutionReset.addEventListener("click", async () => {
-            let configClient = await this.db.readData('configClient')
-            configClient.game_config.screen_size = { width: '854', height: '480' };
+            let cData = await this.db.readData('configClient')
+            let c = Array.isArray(cData) ? cData[0] : cData;
+            c.game_config.screen_size = { width: '854', height: '480' };
             width.value = '854';
             height.value = '480';
-            await this.db.updateData('configClient', configClient);
+            await this.db.updateData('configClient', c);
         })
     }
 
     async launcher() {
-        let configClient = await this.db.readData('configClient');
+        let configData = await this.db.readData('configClient');
+        let configClient = Array.isArray(configData) ? configData[0] : configData;
 
         let maxDownloadFiles = configClient?.launcher_config?.download_multi || 5;
         let maxDownloadFilesInput = document.querySelector(".max-files");
@@ -239,16 +277,18 @@ class Settings {
         maxDownloadFilesInput.value = maxDownloadFiles;
 
         maxDownloadFilesInput.addEventListener("change", async () => {
-            let configClient = await this.db.readData('configClient')
-            configClient.launcher_config.download_multi = maxDownloadFilesInput.value;
-            await this.db.updateData('configClient', configClient);
+            let cData = await this.db.readData('configClient')
+            let c = Array.isArray(cData) ? cData[0] : cData;
+            c.launcher_config.download_multi = maxDownloadFilesInput.value;
+            await this.db.updateData('configClient', c);
         })
 
         maxDownloadFilesReset.addEventListener("click", async () => {
-            let configClient = await this.db.readData('configClient')
+            let cData = await this.db.readData('configClient')
+            let c = Array.isArray(cData) ? cData[0] : cData;
             maxDownloadFilesInput.value = 5
-            configClient.launcher_config.download_multi = 5;
-            await this.db.updateData('configClient', configClient);
+            c.launcher_config.download_multi = 5;
+            await this.db.updateData('configClient', c);
         })
 
         let themeBox = document.querySelector(".theme-box");
@@ -282,9 +322,10 @@ class Settings {
                     e.target.classList.add('active-theme');
                 }
 
-                let configClient = await this.db.readData('configClient')
-                configClient.launcher_config.theme = theme;
-                await this.db.updateData('configClient', configClient);
+                let cData = await this.db.readData('configClient')
+                let c = Array.isArray(cData) ? cData[0] : cData;
+                c.launcher_config.theme = theme;
+                await this.db.updateData('configClient', c);
             }
         })
 
@@ -305,20 +346,21 @@ class Settings {
                 if (e.target.classList.contains('active-close')) return
                 activeClose?.classList.toggle('active-close');
 
-                let configClient = await this.db.readData('configClient')
+                let cData = await this.db.readData('configClient')
+                let c = Array.isArray(cData) ? cData[0] : cData;
 
                 if (e.target.classList.contains('close-launcher')) {
                     e.target.classList.toggle('active-close');
-                    configClient.launcher_config.closeLauncher = "close-launcher";
-                    await this.db.updateData('configClient', configClient);
+                    c.launcher_config.closeLauncher = "close-launcher";
+                    await this.db.updateData('configClient', c);
                 } else if (e.target.classList.contains('close-all')) {
                     e.target.classList.toggle('active-close');
-                    configClient.launcher_config.closeLauncher = "close-all";
-                    await this.db.updateData('configClient', configClient);
+                    c.launcher_config.closeLauncher = "close-all";
+                    await this.db.updateData('configClient', c);
                 } else if (e.target.classList.contains('close-none')) {
                     e.target.classList.toggle('active-close');
-                    configClient.launcher_config.closeLauncher = "close-none";
-                    await this.db.updateData('configClient', configClient);
+                    c.launcher_config.closeLauncher = "close-none";
+                    await this.db.updateData('configClient', c);
                 }
             }
         })

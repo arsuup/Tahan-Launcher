@@ -155,8 +155,9 @@ function sleep(ms) {
 }
 
 document.addEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 73 || e.keyCode == 123) {
+    if (e.key === "F12" + "F4") {
         ipcRenderer.send("update-window-dev-tools");
     }
 })
+
 new Splash();

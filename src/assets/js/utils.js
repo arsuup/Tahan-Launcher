@@ -50,19 +50,42 @@ async function appdata() {
 }
 
 async function addAccount(data) {
-    let skin = false
+    let databaseLauncher = new database();
+    
+    let configData = await databaseLauncher.readData('configClient');
+
+    let skin = false;
     if (data?.profile?.skins[0]?.base64) skin = await new skin2D().creatHeadTexture(data.profile.skins[0].base64);
+
     let div = document.createElement("div");
     div.classList.add("account");
     div.id = data.ID;
+
+    let online = data?.meta?.online ?? true;
+    let copyValue = 'none';
+    let copyTitle = 'Copier';
+
+    if (online) {
+        copyValue = data.uuid;
+        copyTitle = 'Copier l\'UUID';
+    } else {
+        copyValue = data.name;
+        copyTitle = 'Copier le pseudo (crack)';
+    }
+
     div.innerHTML = `
         <div class="profile-image" ${skin ? 'style="background-image: url(' + skin + ');"' : ''}></div>
         <div class="profile-infos">
             <div class="profile-pseudo">${data.name}</div>
             <div class="profile-uuid">${data.uuid}</div>
         </div>
-        <div class="delete-profile" id="${data.ID}">
-            <div class="icon-account-delete delete-profile-icon"></div>
+        <div class="account-actions">
+            <div class="copy-id" data-name="${copyValue}" title="${copyTitle}">
+                <div class="icon-account-copy copy-id-icon"></div>
+            </div>
+            <div class="delete-profile" id="${data.ID}" title="Supprimer le profil">
+                <div class="icon-account-delete delete-profile-icon"></div>
+            </div>
         </div>
     `
     return document.querySelector('.accounts-list').appendChild(div);

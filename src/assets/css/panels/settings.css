@@ -40,7 +40,7 @@
 .nav-settings-btn {
     font-size: 50%;
     border: solid 1px var(--background-element);
-    transition: var(--transition);
+    transition: var(--fast-transition);
     padding: 10px 10px;
     width: 70%;
     text-align: center;
@@ -94,7 +94,7 @@
     justify-content: center;
     align-items: center;
     font-size: 2rem;
-    font-weight: 1000;
+    font-weight: 600;
     margin: 1.5rem 0;
     padding: 0.5rem 2rem;
     text-align: center;
@@ -161,6 +161,12 @@
     pointer-events: none;
 }
 
+.icon-account-add{
+    width:70%;
+    height:70%;
+    margin-right:30%;
+}
+
 .add-text-profile {
     font-size: 1.5rem;
     pointer-events: none;
@@ -192,15 +198,42 @@
 .profile-uuid {
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: 100;
     white-space: nowrap;
     pointer-events: none;
 }
 
+.account-actions {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.copy-id {
+    background: var(--background-transparent);
+    color: var(--color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 2.3rem;
+    cursor: pointer;
+}
+
+.copy-id-icon {
+    pointer-events: none;
+    width:40%;
+    height:70%;
+}
+
 .delete-profile {
     width: 70px;
-    height: 65px;
+    height: 2.3rem;
     background: var(--background-transparent);
-    font-size: 3rem;
+    font-size: 1.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -210,6 +243,8 @@
 
 .delete-profile-icon {
     pointer-events: none;
+    width:40%;
+    height:80%;
 }
 
 /*******************************************************************************
@@ -252,7 +287,7 @@
 .slider-touch-right span:after {
     content: attr(value);
     color: var(--element-color);
-    font: normal normal bold 12px/18px Poppins;
+    font: normal normal bold 12px/18px Archivo;
     white-space: nowrap;
     pointer-events: none;
     position: absolute;
@@ -285,6 +320,7 @@
 
 .ram-info-block {
     font-size: 0.9rem;
+    font-weight: 200;
     color: var(--color);
 }
 

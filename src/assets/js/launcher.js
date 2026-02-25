@@ -15,16 +15,17 @@ const { AZauth, Microsoft, Mojang } = require('minecraft-java-core');
 const { ipcRenderer } = require('electron');
 const fs = require('fs');
 const os = require('os');
+const path = require('path');
 
 class Launcher {
     async init() {
         this.initLog();
         console.log('Initializing Launcher...');
-        this.shortcut()
-        await setBackground()
+        this.shortcut();
+        await setBackground();
         this.initFrame();
-        this.config = await config.GetConfig().then(res => res).catch(err => err);
-        if (await this.config.error) return this.errorConnect()
+        this.config = await config.GetConfig().catch(err => ({ error: err }));
+        if (this.config.error) return this.errorConnect();
         this.db = new database();
         await this.initConfigClient();
         this.createPanels(Login, Home, Settings);
@@ -33,7 +34,7 @@ class Launcher {
 
     initLog() {
         document.addEventListener('keydown', e => {
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 73 || e.keyCode == 123) {
+            if (e.key === "F12") {
                 ipcRenderer.send('main-window-dev-tools-close');
                 ipcRenderer.send('main-window-dev-tools');
             }
@@ -92,13 +93,14 @@ class Launcher {
 
         if (!configClient) {
             await this.db.createData('configClient', {
+                crack: false,
                 account_selected: null,
                 instance_select: null,
                 java_config: {
                     java_path: null,
                     java_memory: {
-                        min: 2,
-                        max: 4
+                        min: 3,
+                        max: 5
                     }
                 },
                 game_config: {
@@ -108,8 +110,8 @@ class Launcher {
                     }
                 },
                 launcher_config: {
-                    download_multi: 5,
-                    theme: 'auto',
+                    download_multi: 8,
+                    theme: 'dark',
                     closeLauncher: 'close-launcher',
                     intelEnabledMac: true
                 }
@@ -118,13 +120,14 @@ class Launcher {
     }
 
     createPanels(...panels) {
-        let panelsElem = document.querySelector('.panels')
+        let panelsElem = document.querySelector('.panels');
         for (let panel of panels) {
             console.log(`Initializing ${panel.name} Panel...`);
             let div = document.createElement('div');
-            div.classList.add('panel', panel.id)
-            div.innerHTML = fs.readFileSync(`${__dirname}/panels/${panel.id}.html`, 'utf8');
+            div.classList.add('panel', panel.id);
+            div.innerHTML = fs.readFileSync(path.join(__dirname, 'panels', `${panel.id}.html`), 'utf8');
             panelsElem.appendChild(div);
+            
             new panel().init(this.config);
         }
     }

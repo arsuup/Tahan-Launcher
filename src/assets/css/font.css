@@ -24,43 +24,34 @@
 
 /* Icons */
 
-@font-face {
-    font-family: 'Icons';
-    src: url('../fonts/Icons.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Social-icons';
-    src: url('../fonts/social-icons.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
-
 [class^="icon-"]:before,
 [class*=" icon-"]:before {
     font-style: normal;
     font-weight: normal;
     display: inline-block;
     text-decoration: inherit;
-    width: 1em;
+    /*width: 1em; */
+    width: 100%; 
+    height: 100%;
     text-align: center;
     font-variant: normal;
     text-transform: none;
     line-height: 1em;
     -webkit-font-smoothing: antialiased;
+    background-repeat: no-repeat;
+    background-size:contain;
 }
 
-.icon-close:before { font-family: "Icons"; content: "\e90e"; }
-.icon-minimize:before { font-family: "Icons"; content: "\e90b" }
-.icon-maximize:before { font-family: "Icons"; content: "\e90c"; }
-.icon-restore-down:before { font-family: "Icons"; content: "\e90d"; }
-.icon-account-add:before { font-family: "Icons"; content: "\e901"; }
-.icon-account-delete:before { font-family: "Icons"; content: "\e902"; }
-.icon-settings:before { font-family: "Icons"; content: "\e909"; }
-.icon-monitor:before { font-family: "Icons"; content: "\e90a"; }
-.icon-arrow:before { font-family: "Social-icons"; content: "\e002"; }
+.icon-close:before { content: ""; background-image: url("../icons/close.svg"); }
+.icon-minimize:before { content: ""; background-image: url("../icons/minimize.svg"); }
+.icon-maximize:before { content: ""; background-image: url("../icons/fullscreen.svg"); }
+.icon-restore-down:before { content: ""; background-image: url("../icons/close_fullscreen.svg"); }
+.icon-account-add:before { content: ""; background-image: url("../icons/person_add.svg"); }
+.icon-account-delete:before { content: ""; background-image: url("../icons/person_remove.svg"); filter: invert(42%) sepia(52%) saturate(4648%) hue-rotate(339deg) brightness(95%) contrast(113%);}
+.icon-account-copy:before { content: ""; background-image: url("../icons/content_copy.svg"); }
+.icon-settings:before { content: ""; background-image: url("../icons/settings.svg"); }
+.icon-monitor:before { content: ""; background-image: url("../icons/monitor.svg"); }
+.icon-arrow:before { content: ""; background-image: url("../icons/double_arrow.svg"); }
 
 .icon-discord { background-image: url('../images/svgs/discord.svg'); background-size: contain; }
 .icon-facebook { background-image: url('../images/svgs/facebook.svg'); background-size: contain; }

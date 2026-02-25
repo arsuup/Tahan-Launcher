@@ -1,7 +1,7 @@
 .global {
     --element-color: rgb(99 82 241);
     --transition: all 0.5s cubic-bezier(0, 0, 0, 1);
-    --fast-transition: all 0.1s cubic-bezier(0, 0, 0, 1);
+    --fast-transition: all 0.2s cubic-bezier(0, 0, 0, 1);
     --dark-color: #323232;
     --light-color: rgb(220 220 220);
 }

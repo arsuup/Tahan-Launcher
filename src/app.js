@@ -99,6 +99,11 @@ ipcMain.on('start-update', () => {
     autoUpdater.downloadUpdate();
 })
 
+ipcMain.on('app-restart', () => {
+    app.relaunch();
+    app.exit();
+});
+
 autoUpdater.on('update-not-available', () => {
     const updateWindow = UpdateWindow.getWindow();
     if (updateWindow) updateWindow.webContents.send('update-not-available');
