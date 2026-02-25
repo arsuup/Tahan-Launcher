@@ -23,7 +23,7 @@ class database {
             this.store = new Store({
                 name: 'launcher-data',
                 cwd: userDataPath,
-                encryptionKey: dev ? undefined : (await this.getKey(32, userDataPath)),
+                //encryptionKey: dev ? undefined : (await this.getKey(32, userDataPath)),
             });
             this.initialized = true;
         }

@@ -140,6 +140,7 @@
     width: calc(400px - 8px);
     height: calc(100px - 8px);
     margin: 1rem;
+    cursor: pointer;
 }
 
 .account-select {
@@ -221,6 +222,10 @@
     width: 70px;
     height: 2.3rem;
     cursor: pointer;
+    transition: var(--very-fast-transition);
+}
+.copy-id:hover {
+    transform:scale(1.1)
 }
 
 .copy-id-icon {
@@ -239,6 +244,10 @@
     align-items: center;
     color: #ff2c2c;
     cursor: pointer;
+    transition: var(--very-fast-transition);
+}
+.delete-profile:hover {
+    transform:scale(1.1)
 }
 
 .delete-profile-icon {
