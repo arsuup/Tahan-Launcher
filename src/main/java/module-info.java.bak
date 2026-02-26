@@ -1,0 +1,9 @@
+module be.arsuup.setcrack {
+    requires javafx.controls;
+    requires javafx.fxml;
+    requires gson;
+    requires java.sql;
+
+    opens be.arsuup.setcrack to javafx.fxml;
+    exports be.arsuup.setcrack;
+}
