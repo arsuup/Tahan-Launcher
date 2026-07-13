@@ -37,11 +37,11 @@ class Login {
         ipcRenderer.invoke('Microsoft-window', this.config.client_id).then(async account_connect => {
             if (account_connect == 'cancel' || !account_connect) {
                 popupLogin.closePopup();
+                return;
             } else {
                 await this.saveData(account_connect)
                 popupLogin.closePopup();
             }
-
         });
     };
 

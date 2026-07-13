@@ -284,7 +284,7 @@
     height: calc(100% - 1px);
     background: var(--second-color);
     text-align: center;
-    padding: 0 0.7rem;
+    padding: 0 0.6rem;
     cursor: pointer;
     height: 3rem;
     transition: all 0.1s
@@ -294,7 +294,7 @@
 }
 
 .instance-select:before {
-    transform: rotate(270deg);
+    font-size: 20px;
     pointer-events: none;
 }
 
@@ -360,6 +360,7 @@
     justify-content: center;
     transition: all 0.2s;
     cursor: pointer;
+    font-size: 24px;
 }
 
 .instances-tab p {
