@@ -9,7 +9,7 @@ const convert = require('xml-js');
 let url = pkg.user ? `${pkg.url}/${pkg.user}` : pkg.url
 
 let config = `${url}/config`;
-let articles = `${url}/articles`;
+let articles = `${url}/news`;
 
 class Config {
     GetConfig() {
