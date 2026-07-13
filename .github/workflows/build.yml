@@ -35,7 +35,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-14, ubuntu-latest, windows-latest]
-
+    
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
@@ -52,14 +52,28 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
-        shell: bash
 
       - name: Build
         run: npm run build
-        shell: bash
 
-      - name: Upload Release Asset
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: launcher-build-${{ matrix.os }}
+          path: dist/
+
+  upload-to-release:
+    needs: [create-release, build-launcher]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-builds
+          merge-multiple: true
+
+      - name: Upload assets to Release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            dist/*
+          tag_name: ${{ needs.create-release.outputs.version }}
+          files: all-builds/*
