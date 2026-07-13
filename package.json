@@ -1,15 +1,15 @@
 {
     "name": "Tahan-Launcher",
     "preductname": "Tahan Launcher",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Launcher Mincraft pour serveur minecraft privé entre amis",
     "main": "src/app.js",
     "author": {
-        "name": "Arsuup, luuxis, Inc.",
+        "name": "Arsuup",
         "email": "prod@arsuup.fr",
         "url": "https://github.com/arsuup"
     },
-    "url": "",
+    "url": "https://launcher.arsuup.fr/",
     "scripts": {
         "start": "cross-env-shell NODE_ENV=dev electron .",
         "dev": "cross-env-shell DEV_TOOL=open nodemon --exec npm start",
