@@ -140,6 +140,7 @@
     text-decoration: underline;
     text-underline-offset: 3px;
     font-size: 1.2rem;
+    font-weight: 200;
     text-align: center;
 }
 
@@ -157,9 +158,8 @@
 }
 
 .news-content .bbWrapper p {
-    font-weight: 100;
+    font-weight: 500;
     margin: 0;
-
 }
 
 .news-content .bbWrapper .news-author {
@@ -283,16 +283,15 @@
     color: var(--color);
     font-size: 1rem;
     height: calc(100% - 1px);
-    border: solid var(--color);
+    border: solid 2px var(--element-color);
     text-align: center;
     padding: 0 0.5rem;
     cursor: pointer;
-    height: 2.63rem;
+    height: calc(3rem - 4px);
     transition: all 0.1s
 }
 .instance-select:hover {
-    border: solid var(--element-color);
-    color: var(--element-color);
+    border: solid 2px var(--second-color);
 }
 
 .instance-select:before {

@@ -43,6 +43,11 @@
     font-weight: 700;
     width: 300px;
     cursor: pointer;
+    transition: all 0.1s;
+}
+.connect:hover,
+.cancel:hover {
+    border-color: var(--second-color);
 }
 
 .input-login .email,
@@ -52,6 +57,6 @@
     background: none;
     border: solid 2px var(--element-color);
     width: 50%;
-    padding: 0.4rem 1rem;
+    padding: 0.7rem 1rem;
     margin-bottom: 2rem;
 }
