@@ -110,7 +110,7 @@
     margin-top: 1rem;
     font-size: 2rem;
     font-weight: 200;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 2rem;
     background: var(--background-transparent);
     color: var(--color);
     backdrop-filter: blur(8px);
