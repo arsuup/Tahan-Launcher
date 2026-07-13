@@ -16,14 +16,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--background);
-    width: 25rem;
-    height: 3rem;
+    background: var(--background-transparent);
+    width: 91%;
+    height: 4rem;
     color: var(--color);
-    border-radius: 10px;
     margin-top: 3rem;
-    padding: 1rem;
+    padding: 1rem 1.4rem;
     text-align: center;
+    backdrop-filter: blur(8px);
 }
 
 .server-status-icon {
@@ -32,11 +32,13 @@
 
 .server-status-name {
     font-size: 1.5rem;
+    font-weight: 200;
     color: var(--color);
 }
 
 .server-status-text {
-    font-size: 0.6rem;
+    font-size: 0.9rem;
+    font-weight: 100;
     color: #1AC707;
 }
 
@@ -48,23 +50,24 @@
     background: var(--shadow);
     min-width: 3rem;
     height: 3rem;
-    border-radius: 10px;
+    border-radius: 0.8rem;
+    backdrop-filter: blur(8px);
 }
 
 .player-count {
     font-size: 1.5rem;
-    margin: 0.4rem 0.5rem;
+    margin: 0.7rem 0.5rem;
 }
 
 .status-player-count:after {
     position: absolute;
     content: '';
-    width: 10px;
-    height: 10px;
-    top: 10px;
-    right: 10px;
+    width: 12px;
+    height: 12px;
+    top: -4px;
+    right: -3px;
     border-radius: 15px;
-    border: solid 5px var(--background);
+    border: solid 3px var(--background);
     background: #1AC707;
 }
 
@@ -72,11 +75,20 @@
     background: #FF0409;
 }
 
-.home-bottom {
-    position: relative;
-    width: 100%;
-    height: calc(100% - 80px - 8rem);
+.home-content {
     display: flex;
+    height: calc(100% - 80px);
+    width: 100%;
+    justify-content: space-between;
+}
+
+.home-bottom {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 2.3rem;
+    gap: 3rem;
 }
 
 /*******************************************************************************
@@ -89,7 +101,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 85%;
+    width: 50%;
     height: 100%;
 }
 
@@ -97,23 +109,22 @@
     margin-top: 1rem;
     font-size: 2rem;
     padding: 0.5rem 1rem;
-    border-radius: 2rem;
     background: var(--background-transparent);
     color: var(--color);
+    backdrop-filter: blur(8px);
 }
 
 .news-list {
     width: 90%;
     height: 100%;
-    border-radius: 10px;
     margin: 1rem 0;
 }
 
 .news-block {
     width: 100%;
     margin: 0 0 1rem 0;
-    border-radius: 10px;
     background: var(--background-transparent);
+    backdrop-filter: blur(8px);
 }
 
 .news-header {
@@ -166,18 +177,14 @@
  ******************************************************************************/
 
 .social-tab {
-    position: absolute;
     display: flex;
-    bottom: 0;
-    right: 0;
-    width: 15%;
+    width: 100%;
     height: calc(80% - 1rem);
-    justify-content: center;
+    justify-content: left;
     margin-bottom: 1rem;
 }
 
 .social-list {
-    border-radius: 10px;
     height: 100%;
 }
 
@@ -187,11 +194,11 @@
     width: 90px;
     height: 90px;
     margin-bottom: 1rem;
-    border-radius: 10px;
     font-size: 2rem;
     cursor: pointer;
     align-items: center;
     justify-content: center;
+    backdrop-filter: blur(8px);
 }
 
 .social-block .icon-social {
@@ -215,13 +222,13 @@
     width: 100%;
     height: 90px;
     background: var(--background-transparent);
+    backdrop-filter: blur(8px);
 }
 
 .player-options {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 15px;
     height: 3rem;
     margin: 0 1.5rem;
 }
@@ -234,7 +241,6 @@
     height: 3rem;
     width: 3rem;
     pointer-events: none;
-    border-radius: 15px;
 }
 
 .player-menu {
@@ -254,10 +260,9 @@
     justify-content: space-between;
     align-items: center;
     position: relative;
-    border: solid 3px var(--element-color);
-    border-radius: 15px;
+    background: var(--element-color);
     height: 3.2rem;
-    padding-right: 1.9rem;
+    cursor: pointer;
 }
 
 .play-btn {
@@ -274,17 +279,14 @@
 .instance-select {
     display: flex;
     align-items: center;
-    position: absolute;
-    right: -3;
-    top: -2;
     color: var(--element-color);
     font-size: 1rem;
     height: calc(100% - 1px);
     border: solid 3px var(--element-color);
     text-align: center;
-    border-radius: 15px;
     padding: 0 0.5rem;
     cursor: pointer;
+    height: 2.78rem;
 }
 
 .instance-select:before {
@@ -320,6 +322,7 @@
     font-size: 3rem;
     color: var(--element-color);
     margin: 0 1.5rem;
+    cursor: pointer;
 }
 
 .instance-popup {

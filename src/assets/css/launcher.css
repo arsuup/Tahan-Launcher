@@ -9,8 +9,8 @@ body {
     padding: 0;
     user-select: none;
     color: var(--color);
-    font-family: 'Poppins';
-    font-weight: bolder;
+    font-family: 'Archivo';
+    font-weight: 500;
 }
 
 img {

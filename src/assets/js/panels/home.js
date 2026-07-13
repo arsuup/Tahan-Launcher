@@ -113,9 +113,14 @@ class Home {
         let instancesListPopup = document.querySelector('.instances-List')
         let instanceCloseBTN = document.querySelector('.close-popup')
 
+        if (instancesList.length === 0) {
+            document.querySelector('.instance-select').style.display = 'none'
+            instanceBTN.textContent = "Miaou"
+            instanceBTN.style.padding = "0 1.2rem";
+        }
+
         if (instancesList.length === 1) {
             document.querySelector('.instance-select').style.display = 'none'
-            instanceBTN.style.paddingRight = '0'
         }
 
         if (!instanceSelect) {
