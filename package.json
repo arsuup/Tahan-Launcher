@@ -1,7 +1,7 @@
 {
     "name": "Tahan-Launcher",
     "preductname": "Tahan Launcher",
-    "version": "1.0.6",
+    "version": "1.1.0",
     "description": "Launcher Mincraft pour serveur minecraft privé entre amis",
     "main": "src/app.js",
     "author": {

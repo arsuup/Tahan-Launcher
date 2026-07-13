@@ -63,26 +63,24 @@
 
 [class^="icon-"]:before,
 [class*=" icon-"]:before {
-    font-style: normal;
-    font-weight: normal;
+    content: "";
     display: inline-block;
-    text-decoration: inherit;
     width: 1em;
-    text-align: center;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1em;
-    -webkit-font-smoothing: antialiased;
+    height: 1em;
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
 }
 
-.icon-close:before { font-family: "Icons"; content: "\e90e"; }
-.icon-minimize:before { font-family: "Icons"; content: "\e90b" }
-.icon-maximize:before { font-family: "Icons"; content: "\e90c"; }
-.icon-restore-down:before { font-family: "Icons"; content: "\e90d"; }
-.icon-account-add:before { font-family: "Icons"; content: "\e901"; }
-.icon-account-delete:before { font-family: "Icons"; content: "\e902"; }
-.icon-settings:before { font-family: "Icons"; content: "\e909"; }
-.icon-monitor:before { font-family: "Icons"; content: "\e90a"; }
-.icon-arrow:before { font-family: "Social-icons"; content: "\e002"; }
+.icon-close:before {background-image: url('../images/svgs/close_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg');background-size: 1.5rem;left: 3px;top: 2px;}
+.icon-minimize:before {background-image: url('../images/svgs/minimize_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg');background-size: 1.2rem;left: 6px;top: 4px;}
+.icon-maximize:before {background-image: url('../images/svgs/fullscreen_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg');background-size: 1.2rem;left: 6px;top: 5px;}
+.icon-restore-down:before {background-image: url('../images/svgs/fullscreen_exit_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg');background-size: 1.3rem;left: 5px;top: 4px;}
+.icon-account-add:before { background-image: url('../images/svgs/person_add_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg'); }
+.icon-account-delete:before {background-image: url('../images/svgs/person_remove_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg');left: 3px;position: relative;filter: invert(70%) sepia(20%) saturate(10000%) hue-rotate(
+333deg) brightness(100%) contrast(100%);}
+.icon-settings:before {position: relative;top: -1px;background-image: url('../images/svgs/settings_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz40.svg');}
+.icon-monitor:before { background-image: url('../images/svgs/monitor_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg'); }
+.icon-arrow:before { background-image: url('../images/svgs/arrow_forward_ios_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg'); }
 
-.icon-discord { background-image: url('../images/svgs/discord.svg'); background-size: contain; }
+.icon-discord { background-image: url('../images/svgs/discord.svg'); }
