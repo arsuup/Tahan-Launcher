@@ -9,9 +9,15 @@
     position: absolute;
     padding: 15px;
     background: var(--background);
-    border-radius: 15px;
     text-align: center;
     min-width: 40%;
+}
+
+.login-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .login-home,
@@ -23,18 +29,20 @@
 
 .login-text {
     font-size: 1.3rem;
+    font-weight: 100;
+    margin-bottom: 1.5rem;
 }
 
 .connect,
 .cancel {
     background: none;
     color: var(--color);
-    border: solid 4px var(--element-color);
-    border-radius: 10px;
-    padding: 0.3rem 4rem;
+    border: solid 2px var(--element-color);
+    padding: 0.5rem 4rem;
     font-size: inherit;
-    font-weight: bold;
-    margin: 15px 10px;
+    font-weight: 700;
+    width: 300px;
+    cursor: pointer;
 }
 
 .input-login .email,
@@ -43,8 +51,7 @@
     color: var(--color);
     background: none;
     border: solid 2px var(--element-color);
-    border-radius: 30px;
     width: 50%;
     padding: 0.4rem 1rem;
-    margin-top: 10px;
+    margin-bottom: 2rem;
 }

@@ -50,8 +50,9 @@
     background: var(--shadow);
     min-width: 3rem;
     height: 3rem;
-    border-radius: 0.8rem;
+    border-radius: 0.4rem;
     backdrop-filter: blur(8px);
+    padding: 0 0.5rem;
 }
 
 .player-count {
@@ -108,6 +109,7 @@
 .titre-tab-new {
     margin-top: 1rem;
     font-size: 2rem;
+    font-weight: 200;
     padding: 0.5rem 1rem;
     background: var(--background-transparent);
     color: var(--color);
@@ -256,37 +258,41 @@
 }
 
 .play-instance {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    background: var(--element-color);
-    height: 3.2rem;
-    cursor: pointer;
+
 }
 
 .play-btn {
+    background: var(--element-color);
+    height: 3rem;
+    cursor: pointer;
     border: none;
-    border-radius: 10px;
-    background: none;
     color: var(--color);
     font-size: 2rem;
-    font-weight: bolder;
+    font-weight: 200;
+    font-family: 'Archivo';
     padding: 0 1.5rem;
-    pointer-events: none;
+    transition: all 0.1s;
+}
+.play-btn:hover {
+    background: var(--second-color);
 }
 
 .instance-select {
     display: flex;
     align-items: center;
-    color: var(--element-color);
+    color: var(--color);
     font-size: 1rem;
     height: calc(100% - 1px);
-    border: solid 3px var(--element-color);
+    border: solid var(--color);
     text-align: center;
     padding: 0 0.5rem;
     cursor: pointer;
-    height: 2.78rem;
+    height: 2.63rem;
+    transition: all 0.1s
+}
+.instance-select:hover {
+    border: solid var(--element-color);
+    color: var(--element-color);
 }
 
 .instance-select:before {
@@ -297,23 +303,23 @@
 .info-starting-game {
     display: none;
     text-align: center;
+    font-weight: 100;
 }
 
 .progress-bar {
     appearance: none;
-    height: 10px;
+    height: 20px;
+    width: 30rem;
     margin: 0.5rem 0;
 }
 
 .progress-bar::-webkit-progress-bar {
     background-color: var(--background);
     border: solid 1px var(--element-color);
-    border-radius: 10px;
 }
 
 .progress-bar::-webkit-progress-value {
     background-color: var(--element-color);
-    border-radius: 10px;
 }
 
 .settings-btn {
@@ -341,7 +347,6 @@
 .instances-tab {
     position: relative;
     background: var(--background);
-    border-radius: 10px;
     padding: 1rem 3rem;
 }
 
@@ -350,12 +355,13 @@
     display: flex;
     top: 10px;
     right: 10px;
-    background: var(--shadow);
+    background: var(--background-element);
     height: 30px;
     width: 30px;
-    border-radius: 10px;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s;
+    cursor: pointer;
 }
 
 .instances-tab p {
@@ -366,10 +372,11 @@
 .instance-elements {
     background: var(--background-element);
     text-align: center;
-    border-radius: 10px;
     margin: 0.5rem 0;
+    padding: 0.5rem;
     font-size: 1.5rem;
     cursor: pointer;
+    transition: all 0.2s;
 }
 
 .instance-elements:hover {

@@ -108,10 +108,15 @@ class Home {
         let instancesList = await config.getInstanceList()
         let instanceSelect = instancesList.find(i => i.name == configClient?.instance_select) ? configClient?.instance_select : null
 
-        let instanceBTN = document.querySelector('.play-instance')
+        let playBTN = document.querySelector('.play-btn')
+        let instanceBTN = document.querySelector('.instance-select')
         let instancePopup = document.querySelector('.instance-popup')
         let instancesListPopup = document.querySelector('.instances-List')
         let instanceCloseBTN = document.querySelector('.close-popup')
+
+        playBTN.addEventListener('click', () => {
+            this.startGame()
+        })
 
         if (instancesList.length === 0) {
             document.querySelector('.instance-select').style.display = 'none'
@@ -197,8 +202,6 @@ class Home {
 
                 instancePopup.style.display = 'flex'
             }
-
-            if (!e.target.classList.contains('instance-select')) this.startGame()
         })
 
         instanceCloseBTN.addEventListener('click', () => instancePopup.style.display = 'none')
@@ -211,7 +214,8 @@ class Home {
         let authenticator = await this.db.readData('accounts', configClient.account_selected)
         let options = instance.find(i => i.name == configClient.instance_select)
 
-        let playInstanceBTN = document.querySelector('.play-instance')
+        let playInstanceBTN = document.querySelector('.play-btn')
+        let instanceSelectBTN = document.querySelector('.instance-select')
         let infoStartingBOX = document.querySelector('.info-starting-game')
         let infoStarting = document.querySelector(".info-starting-game-text")
         let progressBar = document.querySelector('.progress-bar')
@@ -258,6 +262,7 @@ class Home {
         launch.Launch(opt);
 
         playInstanceBTN.style.display = "none"
+        instanceSelectBTN.style.display = "none"
         infoStartingBOX.style.display = "block"
         progressBar.style.display = "";
         ipcRenderer.send('main-window-progress-load')

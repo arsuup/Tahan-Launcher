@@ -33,6 +33,11 @@
     margin: 3rem;
 }
 
+.nav-box #save:hover{
+    background: var(--color);
+    color: var(--background)
+}
+
 .nav-settings-btn {
     font-size: 1.2rem;
     border: solid 1px var(--element-color);
@@ -40,6 +45,10 @@
     width: 70%;
     text-align: center;
     cursor: pointer;
+    transition: all 0.2s;
+}
+.nav-settings-btn:hover{
+    background: var(--element-color);
 }
 
 .active-settings-BTN {
@@ -121,7 +130,6 @@
 
 .account {
     background: var(--background-transparent);
-    border: solid 4px var(--background-transparent);
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -132,7 +140,7 @@
 }
 
 .account-select {
-    border: solid 2px var(--light-color);
+    border: solid 2px var(--color);
 }
 
 .accounts-list #add {
@@ -284,7 +292,7 @@
 }
 
 .java-path-input-text {
-    background: var(--shadow);
+    background: var(--background-element);
     border: none;
     color: var(--color);
     padding: 0.7rem 1rem;
@@ -351,7 +359,7 @@
  ******************************************************************************/
 
 .input-max-files {
-    background: var(--shadow);
+    background: var(--background-element);
     border: none;
     color: var(--color);
     padding: 0.7rem 1rem;
@@ -377,6 +385,7 @@
     border: 2px solid var(--color);
     padding: 1rem;
     cursor: pointer;
+    background: var(--background-element);
 }
 
 .active-close {

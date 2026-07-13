@@ -149,16 +149,17 @@ input::-webkit-inner-spin-button {
 
 .popup-tab {
     width: 40%;
-    padding: 15px;
+    padding: 1.5rem;
     background: var(--background);
-    border-radius: 15px;
     z-index: 10;
 }
 
 .popup-title {
     text-align: center;
     font-size: 2rem;
-    border-bottom: solid 4px var(--color);
+    font-weight: 100;
+    height: 3rem;
+    border-bottom: solid 2px var(--color);
     margin-bottom: 1rem;
 }
 
