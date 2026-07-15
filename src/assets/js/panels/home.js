@@ -1,7 +1,3 @@
-/**
- * @author Luuxis
- * Luuxis License v1.0 (voir fichier LICENSE pour les détails en FR/EN)
- */
 import { config, database, logger, changePanel, appdata, setStatus, pkg, popup } from '../utils.js'
 
 const { Launch } = require('minecraft-java-core')
@@ -20,6 +16,7 @@ class Home {
 
     async news() {
         let newsElement = document.querySelector('.news-list');
+        let newsss = await config.getNews(this.config)
         let news = await config.getNews(this.config).then(res => res).catch(err => false);
         if (news) {
             if (!news.length) {
@@ -30,7 +27,7 @@ class Home {
                     <div class="news-header">
                         <img class="server-status-icon" src="assets/images/icon/icon.png">
                         <div class="header-text">
-                            <div class="title">Aucun news n'ai actuellement disponible.</div>
+                            <div class="title">Aucun news n'est actuellement disponible.</div>
                         </div>
                         <div class="date">
                             <div class="day">${date.day}</div>
@@ -76,7 +73,7 @@ class Home {
                 <div class="news-header">
                         <img class="server-status-icon" src="assets/images/icon/icon.png">
                         <div class="header-text">
-                            <div class="title">Error.</div>
+                            <div class="title">Erreur.</div>
                         </div>
                         <div class="date">
                             <div class="day">${date.day}</div>
@@ -104,12 +101,19 @@ class Home {
 
     async instancesSelect() {
         let configClient = await this.db.readData('configClient')
-        let auth = await this.db.readData('accounts', configClient.account_selected)
-        let instancesList = await config.getInstanceList()
-        let instanceSelect = instancesList.find(i => i.name == configClient?.instance_select) ? configClient?.instance_select : null
-
-        let playBTN = document.querySelector('.play-btn')
         let instanceBTN = document.querySelector('.instance-select')
+        let playBTN = document.querySelector('.play-btn')
+        
+        let instancesList = await config.getInstanceList()
+        if (instancesList[1] === "not whitelisted.") {
+            instanceBTN.style.display = 'none';
+            playBTN.style.background = 'transparent';
+            playBTN.textContent = "Vous n'êtes pas autorisé.";
+            playBTN.style.cursor = 'default';
+            return;
+        }
+        
+        let instanceSelect = instancesList.find(i => i.name == configClient?.instance_select) ? configClient?.instance_select : null
         let instancePopup = document.querySelector('.instance-popup')
         let instancesListPopup = document.querySelector('.instances-List')
         let instanceCloseBTN = document.querySelector('.close-popup')
@@ -119,17 +123,18 @@ class Home {
         })
 
         if (instancesList.length === 0) {
-            document.querySelector('.instance-select').style.display = 'none'
-            instanceBTN.textContent = "Miaou"
-            instanceBTN.style.padding = "0 1.2rem";
+            instanceBTN.style.display = 'none';
+            playBTN.style.background = 'transparent';
+            playBTN.textContent = "Erreur.";
+            playBTN.style.cursor = 'default';
         }
 
         if (instancesList.length === 1) {
-            document.querySelector('.instance-select').style.display = 'none'
+            instanceBTN.style.display = 'none'
         }
 
         if (!instanceSelect) {
-            let newInstanceSelect = instancesList.find(i => i.whitelistActive == false)
+            let newInstanceSelect = instancesList.find(i => i !== undefined);
             let configClient = await this.db.readData('configClient')
             configClient.instance_select = newInstanceSelect.name
             instanceSelect = newInstanceSelect.name
@@ -137,19 +142,7 @@ class Home {
         }
 
         for (let instance of instancesList) {
-            if (instance.whitelistActive) {
-                let whitelist = instance.whitelist.find(whitelist => whitelist == auth?.name)
-                if (whitelist !== auth?.name) {
-                    if (instance.name == instanceSelect) {
-                        let newInstanceSelect = instancesList.find(i => i.whitelistActive == false)
-                        let configClient = await this.db.readData('configClient')
-                        configClient.instance_select = newInstanceSelect.name
-                        instanceSelect = newInstanceSelect.name
-                        setStatus(newInstanceSelect.status)
-                        await this.db.updateData('configClient', configClient)
-                    }
-                }
-            } else console.log(`Initializing instance ${instance.name}...`)
+            console.log(`Initializing instance ${instance.name}...`)
             if (instance.name == instanceSelect) setStatus(instance.status)
         }
 
@@ -176,27 +169,14 @@ class Home {
         instanceBTN.addEventListener('click', async e => {
             let configClient = await this.db.readData('configClient')
             let instanceSelect = configClient.instance_select
-            let auth = await this.db.readData('accounts', configClient.account_selected)
 
             if (e.target.classList.contains('instance-select')) {
                 instancesListPopup.innerHTML = ''
                 for (let instance of instancesList) {
-                    if (instance.whitelistActive) {
-                        instance.whitelist.map(whitelist => {
-                            if (whitelist == auth?.name) {
-                                if (instance.name == instanceSelect) {
-                                    instancesListPopup.innerHTML += `<div id="${instance.name}" class="instance-elements active-instance">${instance.name}</div>`
-                                } else {
-                                    instancesListPopup.innerHTML += `<div id="${instance.name}" class="instance-elements">${instance.name}</div>`
-                                }
-                            }
-                        })
+                    if (instance.name == instanceSelect) {
+                        instancesListPopup.innerHTML += `<div id="${instance.name}" class="instance-elements active-instance">${instance.name}</div>`
                     } else {
-                        if (instance.name == instanceSelect) {
-                            instancesListPopup.innerHTML += `<div id="${instance.name}" class="instance-elements active-instance">${instance.name}</div>`
-                        } else {
-                            instancesListPopup.innerHTML += `<div id="${instance.name}" class="instance-elements">${instance.name}</div>`
-                        }
+                        instancesListPopup.innerHTML += `<div id="${instance.name}" class="instance-elements">${instance.name}</div>`
                     }
                 }
 
@@ -267,13 +247,16 @@ class Home {
         progressBar.style.display = "";
         ipcRenderer.send('main-window-progress-load')
 
+        let downloadSpeed = "0 Mb/s"
+        let estimatedTime = "0"
+
         launch.on('extract', extract => {
             ipcRenderer.send('main-window-progress-load')
             console.log(extract);
         });
 
         launch.on('progress', (progress, size) => {
-            infoStarting.innerHTML = `Téléchargement ${((progress / size) * 100).toFixed(0)}%`
+            infoStarting.innerHTML = `Téléchargement ${((progress / size) * 100).toFixed(0)}% / ${estimatedTime} : ${downloadSpeed}`
             ipcRenderer.send('main-window-progress', { progress, size })
             progressBar.value = progress;
             progressBar.max = size;
@@ -288,13 +271,20 @@ class Home {
 
         launch.on('estimated', (time) => {
             let hours = Math.floor(time / 3600);
-            let minutes = Math.floor((time - hours * 3600) / 60);
-            let seconds = Math.floor(time - hours * 3600 - minutes * 60);
-            console.log(`${hours}h ${minutes}m ${seconds}s`);
+            let minutes = Math.floor((time % 3600) / 60);
+            let seconds = Math.floor(time % 60);
+
+            let parts = [];
+
+            if (hours > 0) parts.push(`${hours}h`);
+            if (minutes > 0) parts.push(`${minutes}m`);
+            if (seconds > 0 || parts.length === 0) parts.push(`${seconds}s`);
+
+            estimatedTime = parts.join(' ');
         })
 
         launch.on('speed', (speed) => {
-            console.log(`${(speed / 1067008).toFixed(2)} Mb/s`)
+            downloadSpeed = `${(speed / 1067008).toFixed(2)} Mb/s`
         })
 
         launch.on('patch', patch => {

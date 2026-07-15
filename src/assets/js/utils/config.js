@@ -1,39 +1,43 @@
-/**
- * @author Luuxis
- * Luuxis License v1.0 (voir fichier LICENSE pour les détails en FR/EN)
- */
-
 const pkg = require('../package.json');
 const nodeFetch = require("node-fetch");
 const convert = require('xml-js');
-let url = pkg.user ? `${pkg.url}/${pkg.user}` : pkg.url
+import database from './database.js';
 
+let url = pkg.user ? `${pkg.url}/${pkg.user}` : pkg.url
 let config = `${url}/config`;
-let articles = `${url}/news`;
 
 class Config {
-    GetConfig() {
-        return new Promise((resolve, reject) => {
-            nodeFetch(config).then(async config => {
-                if (config.status === 200) return resolve(config.json());
-                else return reject({ error: { code: config.statusText, message: 'server not accessible' } });
-            }).catch(error => {
-                return reject({ error });
-            })
-        })
+    constructor() {
+        this.db = new database();
+        this.ready = this.init();
+    }
+
+    async init() {
+        let configClient = await this.db.readData('configClient');
+        let auth = await this.db.readData('accounts', configClient.account_selected);
+        let accountType = auth?.meta?.type;
+        this.crack = accountType === 'Mojang';
+        const id = this.crack ? auth.name : auth.uuid;
+        
+        this.newsUrl = `${url}/news?auth=${id}`;
+        this.InstancesUrl = `${url}/instances?auth=${id}`;
+    }
+
+    async ensureReady() {
+        await this.ready;
+    }
+
+    async GetConfig() {
+        const res = await nodeFetch(config);
+        if (res.status !== 200) throw new Error('server not accessible');
+        return res.json();
     }
 
     async getInstanceList() {
-        let urlInstance = `${url}/instances`
-        let instances = await nodeFetch(urlInstance).then(res => res.json()).catch(err => err)
-        let instancesList = []
-        instances = Object.entries(instances)
-
-        for (let [name, data] of instances) {
-            let instance = data
-            instancesList.push(instance)
-        }
-        return instancesList
+        await this.ensureReady();
+        const res = await nodeFetch(this.InstancesUrl);
+        const instances = await res.json();
+        return Object.values(instances);
     }
 
     async getNews(config) {
@@ -61,7 +65,7 @@ class Config {
             })
         } else {
             return new Promise((resolve, reject) => {
-                nodeFetch(articles).then(async config => {
+                nodeFetch(this.newsUrl).then(async config => {
                     if (config.status === 200) return resolve(config.json());
                     else return reject({ error: { code: config.statusText, message: 'server not accessible' } });
                 }).catch(error => {

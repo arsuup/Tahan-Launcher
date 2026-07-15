@@ -170,8 +170,7 @@ input::-webkit-inner-spin-button {
 .popup-button {
     background: none;
     color: var(--color);
-    border: solid 4px var(--element-color);
-    border-radius: 10px;
+    border: solid 2px var(--element-color);
     padding: 0.3rem 4rem;
     font-size: inherit;
     font-weight: bold;

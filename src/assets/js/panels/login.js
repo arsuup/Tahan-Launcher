@@ -1,7 +1,3 @@
-/**
- * @author Luuxis
- * Luuxis License v1.0 (voir fichier LICENSE pour les détails en FR/EN)
- */
 const { Mojang } = require('minecraft-java-core');
 const { ipcRenderer } = require('electron');
 
@@ -36,11 +32,11 @@ class Login {
 
         ipcRenderer.invoke('Microsoft-window', this.config.client_id).then(async account_connect => {
             if (account_connect == 'cancel' || !account_connect) {
-                popupLogin.closePopup();
+                this.popupLogin.closePopup();
                 return;
             } else {
                 await this.saveData(account_connect)
-                popupLogin.closePopup();
+                this.popupLogin.closePopup();
             }
         });
     };
