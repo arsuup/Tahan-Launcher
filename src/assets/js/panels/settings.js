@@ -1,5 +1,5 @@
 import { changePanel, accountSelect, database, Slider, config, setStatus, popup, appdata, setBackground } from '../utils.js'
-const { ipcRenderer } = require('electron');
+const { ipcRenderer } = require('electron')
 const os = require('os');
 
 class Settings {
@@ -45,8 +45,42 @@ class Settings {
         document.querySelector('.accounts-list').addEventListener('click', async e => {
             let popupAccount = new popup()
             try {
-                let id = e.target.id
-                if (e.target.classList.contains('account')) {
+                let accountElement = e.target.closest('.account')
+                let deleteElement = e.target.closest('.delete-profile')
+                
+                if (deleteElement) {
+                    let id = deleteElement.id
+
+                    popupAccount.openPopup({
+                        title: 'Connexion',
+                        content: 'Veuillez patienter...',
+                        color: 'var(--color)'
+                    })
+
+                    await this.db.deleteData('accounts', parseInt(id));
+                    let deleteProfile = document.getElementById(`${id}`);
+                    let accountListElement = document.querySelector('.accounts-list');
+                    accountListElement.removeChild(deleteProfile);
+
+                    if (accountListElement.children.length == 1) return changePanel('login');
+
+                    let configClient = await this.db.readData('configClient');
+
+                    if (configClient.account_selected == id) {
+                        let allAccounts = await this.db.readAllData('accounts');
+                        if (!allAccounts.length) return changePanel('login');
+
+                        configClient.account_selected = allAccounts[0].ID
+                        await accountSelect(allAccounts[0]);
+                        let newInstanceSelect = await this.setInstance(allAccounts[0]);
+                        configClient.instance_select = newInstanceSelect.instance_select
+                        return await this.db.updateData('configClient', configClient);
+                    }
+                }
+
+                if (accountElement) {
+                    let id = accountElement.id
+
                     popupAccount.openPopup({
                         title: 'Connexion',
                         content: 'Veuillez patienter...',
@@ -58,36 +92,15 @@ class Settings {
                         return changePanel('login')
                     }
 
-                    let account = await this.db.readData('accounts', id);
+                    let account = await this.db.readData('accounts', parseInt(id));
+                    if (!account) throw new Error(`Account ${id} not found in database`);
+
                     let configClient = await this.setInstance(account);
                     await accountSelect(account);
                     configClient.account_selected = account.ID;
-                    return await this.db.updateData('configClient', configClient);
-                }
-
-                if (e.target.classList.contains("delete-profile")) {
-                    popupAccount.openPopup({
-                        title: 'Connexion',
-                        content: 'Veuillez patienter...',
-                        color: 'var(--color)'
-                    })
-                    await this.db.deleteData('accounts', id);
-                    let deleteProfile = document.getElementById(`${id}`);
-                    let accountListElement = document.querySelector('.accounts-list');
-                    accountListElement.removeChild(deleteProfile);
-
-                    if (accountListElement.children.length == 1) return changePanel('login');
-
-                    let configClient = await this.db.readData('configClient');
-
-                    if (configClient.account_selected == id) {
-                        let allAccounts = await this.db.readAllData('accounts');
-                        configClient.account_selected = allAccounts[0].ID
-                        accountSelect(allAccounts[0]);
-                        let newInstanceSelect = await this.setInstance(allAccounts[0]);
-                        configClient.instance_select = newInstanceSelect.instance_select
-                        return await this.db.updateData('configClient', configClient);
-                    }
+                    await this.db.updateData('configClient', configClient);
+                    
+                    ipcRenderer.send('app-restart')
                 }
             } catch (err) {
                 console.error(err)

@@ -16,7 +16,6 @@ class Home {
 
     async news() {
         let newsElement = document.querySelector('.news-list');
-        let newsss = await config.getNews(this.config)
         let news = await config.getNews(this.config).then(res => res).catch(err => false);
         if (news) {
             if (!news.length) {
@@ -105,7 +104,7 @@ class Home {
         let playBTN = document.querySelector('.play-btn')
         
         let instancesList = await config.getInstanceList()
-        if (instancesList[1] === "not whitelisted.") {
+        if (instancesList[1] === "not whitelisted") {
             instanceBTN.style.display = 'none';
             playBTN.style.background = 'transparent';
             playBTN.textContent = "Vous n'êtes pas autorisé.";
