@@ -47,9 +47,9 @@
 }
 
 .status-player-count {
-    background: var(--shadow);
-    min-width: 3rem;
+    background: var(--background-element);
     height: 3rem;
+    min-width: 2rem;
     border-radius: 0.4rem;
     backdrop-filter: blur(8px);
     padding: 0 0.5rem;
@@ -208,6 +208,8 @@
     background-repeat: no-repeat;
     height: 55%;
     width: 55%;
+    background-size: 100%;
+    filter: invert(1);
 }
 
 /*******************************************************************************
@@ -254,10 +256,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.play-instance {
-
 }
 
 .play-btn {
