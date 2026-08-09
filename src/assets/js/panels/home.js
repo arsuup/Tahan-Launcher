@@ -310,7 +310,7 @@ class Home {
             ipcRenderer.send('main-window-progress-reset')
             infoStartingBOX.style.display = "none"
             playInstanceBTN.style.display = "block"
-            instanceSelectBTN.style.display = "block"
+            instanceSelectBTN.style.display = "flex"
             infoStarting.innerHTML = `Vérification`
             new logger(pkg.name, '#7289da');
             console.log('Close');
