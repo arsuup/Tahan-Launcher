@@ -14,10 +14,10 @@ class Config {
 
     async init() {
         let configClient = await this.db.readData('configClient');
-        let auth = await this.db.readData('accounts', configClient.account_selected);
+        let auth = await this.db.readData('accounts', configClient?.account_selected);
         let accountType = auth?.meta?.type;
         this.crack = accountType === 'Mojang';
-        const id = this.crack ? auth.name : auth.uuid;
+        const id = this.crack ? auth?.name : auth?.uuid;
         
         this.newsUrl = `${url}/news?auth=${id}`;
         this.InstancesUrl = `${url}/instances?auth=${id}`;

@@ -135,8 +135,8 @@ class Home {
         if (!instanceSelect) {
             let newInstanceSelect = instancesList.find(i => i !== undefined);
             let configClient = await this.db.readData('configClient')
-            configClient.instance_select = newInstanceSelect.name
-            instanceSelect = newInstanceSelect.name
+            configClient.instance_select = newInstanceSelect?.name
+            instanceSelect = newInstanceSelect?.name
             await this.db.updateData('configClient', configClient)
         }
 
