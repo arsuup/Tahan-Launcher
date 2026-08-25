@@ -168,13 +168,13 @@ input::-webkit-inner-spin-button {
 }
 
 .popup-button {
-    background: none;
+    background: var(--element-color);
     color: var(--color);
     border: solid 2px var(--element-color);
     padding: 0.3rem 4rem;
     font-size: inherit;
     font-weight: bold;
-    margin: 15px 10px;
+    margin: 0 10px;
 }
 
 .panel {

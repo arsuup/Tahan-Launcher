@@ -206,9 +206,9 @@ class Home {
             path: `${await appdata()}/${process.platform == 'darwin' ? this.config.dataDirectory : `.${this.config.dataDirectory}`}`,
             instance: options.name,
             version: options.loader.minecraft_version,
-            detached: configClient.launcher_config.closeLauncher == "close-all" ? false : true,
-            downloadFileMultiple: configClient.launcher_config.download_multi,
-            intelEnabledMac: configClient.launcher_config.intelEnabledMac,
+            detached: configClient.launcher_config?.closeLauncher == "close-all" ? false : true,
+            downloadFileMultiple: configClient.launcher_config?.download_multi,
+            intelEnabledMac: configClient.launcher_config?.intelEnabledMac,
 
             loader: {
                 type: options.loader.loader_type,
@@ -221,20 +221,20 @@ class Home {
             ignored: [...options.ignored],
 
             java: {
-                path: configClient.java_config.java_path,
+                path: configClient.java_config?.java_path,
             },
 
             JVM_ARGS:  options.jvm_args ? options.jvm_args : [],
             GAME_ARGS: options.game_args ? options.game_args : [],
 
             screen: {
-                width: configClient.game_config.screen_size.width,
-                height: configClient.game_config.screen_size.height
+                width: configClient.game_config?.screen_size.width,
+                height: configClient.game_config?.screen_size.height
             },
 
             memory: {
-                min: `${configClient.java_config.java_memory.min * 1024}M`,
-                max: `${configClient.java_config.java_memory.max * 1024}M`
+                min: `${configClient.java_config?.java_memory.min * 1024}M`,
+                max: `${configClient.java_config?.java_memory.max * 1024}M`
             }
         }
 
@@ -283,7 +283,7 @@ class Home {
         })
 
         launch.on('speed', (speed) => {
-            downloadSpeed = `${(speed / 1067008).toFixed(2)} Mb/s`
+            downloadSpeed = `${(speed / 1067008).toFixed(2) * 8} Mb/s`
         })
 
         launch.on('patch', patch => {
@@ -299,7 +299,7 @@ class Home {
             };
             new logger('Minecraft', '#36b030');
             ipcRenderer.send('main-window-progress-load')
-            infoStarting.innerHTML = `Demarrage en cours...`
+            infoStarting.innerHTML = `Démarrage en cours...`
             console.log(e);
         })
 
@@ -321,17 +321,18 @@ class Home {
 
             popupError.openPopup({
                 title: 'Erreur',
-                content: err.error,
+                content: err?.error,
                 color: 'red',
                 options: true
             })
 
-            if (configClient.launcher_config.closeLauncher == 'close-launcher') {
+            if (configClient.launcher_config?.closeLauncher == 'close-launcher') {
                 ipcRenderer.send("main-window-show")
             };
             ipcRenderer.send('main-window-progress-reset')
             infoStartingBOX.style.display = "none"
-            playInstanceBTN.style.display = "flex"
+            playInstanceBTN.style.display = "block"
+            instanceSelectBTN.style.display = "flex"
             infoStarting.innerHTML = `Vérification`
             new logger(pkg.name, '#7289da');
             console.log(err);
