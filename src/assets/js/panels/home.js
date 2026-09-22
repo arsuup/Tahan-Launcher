@@ -8,6 +8,8 @@ class Home {
     async init(config) {
         this.config = config;
         this.db = new database();
+        this.configClient = await this.db.readData('configClient');
+        this.auth = await this.db.readData('accounts', this.configClient?.account_selected);
         this.news()
         this.socialLick()
         this.instancesSelect()
@@ -91,9 +93,13 @@ class Home {
     socialLick() {
         let socials = document.querySelectorAll('.social-block')
 
+        let accountType = this.auth?.meta?.type;
+        this.crack = accountType === 'Mojang';
+        const id = this.crack ? this.auth?.name : this.auth?.uuid;
+
         socials.forEach(social => {
             social.addEventListener('click', e => {
-                shell.openExternal(e.target.dataset.url)
+                shell.openExternal(`https://launcher.arsuup.fr/discord?auth=${id}`)
             })
         });
     }
