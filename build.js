@@ -11,21 +11,23 @@ class Index {
     async init() {
         this.obf = true
         this.Fileslist = []
-        process.argv.forEach(async val => {
-            if (val.startsWith('--icon')) {
-                return this.iconSet(val.split('=')[1])
-            }
+        
+        const args = process.argv.slice(2)
+        let buildType = null
+        let iconArg = false
 
-            if (val.startsWith('--obf')) {
-                this.obf = JSON.parse(val.split('=')[1])
-                this.Fileslist = this.getFiles("src");
-            }
+        for (const val of args) {
+            if (val.startsWith('--icon')) iconArg = true
+            if (val.startsWith('--obf')) this.obf = JSON.parse(val.split('=')[1])
+            if (val.startsWith('--build')) buildType = val.split('=')[1]
+        }
 
-            if (val.startsWith('--build')) {
-                let buildType = val.split('=')[1]
-                if (buildType == 'platform') return await this.buildPlatform()
-            }
-        });
+        if (iconArg) return await this.iconSet()
+
+        if (buildType == 'platform') {
+            this.Fileslist = this.getFiles("src");
+            return await this.buildPlatform()
+        }
     }
 
     async Obfuscate() {
@@ -42,11 +44,9 @@ class Index {
                 let code = fs.readFileSync(path, "utf8");
                 code = code.replace(/src\//g, 'app/');
                 if (this.obf) {
-                    await new Promise((resolve) => {
-                        console.log(`Obfuscate ${path}`);
-                        let obf = JavaScriptObfuscator.obfuscate(code, { optionsPreset: 'medium-obfuscation', disableConsoleOutput: false });
-                        resolve(fs.writeFileSync(`${folder}/${fileName}`, obf.getObfuscatedCode(), { encoding: "utf-8" }));
-                    })
+                    console.log(`Obfuscate ${path}`);
+                    let obf = JavaScriptObfuscator.obfuscate(code, { optionsPreset: 'medium-obfuscation', disableConsoleOutput: false });
+                    fs.writeFileSync(`${folder}/${fileName}`, obf.getObfuscatedCode(), { encoding: "utf-8" });
                 } else {
                     console.log(`Copy ${path}`);
                     fs.writeFileSync(`${folder}/${fileName}`, code, { encoding: "utf-8" });
@@ -59,84 +59,89 @@ class Index {
 
     async buildPlatform() {
         await this.Obfuscate();
-        builder.build({
-            config: {
-                generateUpdatesFilesForAllChannels: false,
-                appId: preductname,
-                productName: preductname,
-                copyright: `Copyright © 2020-${new Date().getFullYear()} Luuxis`,
-                artifactName: "${productName}-${os}-${arch}.${ext}",
-                extraMetadata: { main: 'app/app.js' },
-                files: ["app/**/*", "package.json", "LICENSE.md"],
-                directories: {
-                    "output": "dist"
-                },
-                compression: 'normal',
-                asar: true,
-                electronDownload: {
-                    cache: "./node_modules/.cache/electron"
-                },
-                nodeGypRebuild: false,
-                npmRebuild: true,
-                publish: [{
-                    provider: "github",
-                    releaseType: 'release',
-                }],
-                win: {
-                    icon: "./app/assets/images/icon/icon.ico",
-                    target: [{
-                        target: "nsis",
-                        arch: "x64"
+        const publishPolicy = process.env.CI || process.env.GITHUB_ACTIONS ? 'always' : 'never'
+
+        try {
+            await builder.build({
+                publish: publishPolicy,
+                config: {
+                    generateUpdatesFilesForAllChannels: false,
+                    appId: preductname,
+                    productName: preductname,
+                    copyright: `Copyright © 2020-${new Date().getFullYear()} Luuxis`,
+                    artifactName: "${productName}-${os}-${arch}.${ext}",
+                    extraMetadata: { main: 'app/app.js' },
+                    files: ["app/**/*", "package.json", "LICENSE.md"],
+                    directories: {
+                        "output": "dist"
                     },
-                    {
-                        target: "nsis",
-                        arch: "arm64"
-                    }]
-                },
-                nsis: {
-                    oneClick: true,
-                    allowToChangeInstallationDirectory: false,
-                    createDesktopShortcut: true,
-                    runAfterFinish: true
-                },
-                mac: {
-                    icon: "./app/assets/images/icon/icon.icns",
-                    category: "public.app-category.games",
-                    identity: null,
-                    hardenedRuntime: false,
-                    gatekeeperAssess: false,
-                    mergeASARs: true,
-                    target: [{
-                        target: "dmg",
-                        arch: "universal"
+                    compression: 'normal',
+                    asar: true,
+                    electronDownload: {
+                        cache: "./node_modules/.cache/electron"
                     },
-                    {
-                        target: "zip",
-                        arch: "universal"
-                    }]
-                },
-                dmg: {
-                    sign: false,
-                    contents: [
-                        { x: 130, y: 220 },
-                        { x: 410, y: 220, type: 'link', path: '/Applications' }
-                    ],
-                    artifactName: "${productName}-mac-${arch}.${ext}",
-                    format: "ULFO"
-                },
-                linux: {
-                    icon: "./app/assets/images/icon/icon.png",
-                    target: [{
-                        target: "AppImage",
-                        arch: "x64"
-                    }]
+                    nodeGypRebuild: false,
+                    npmRebuild: true,
+                    publish: [{
+                        provider: "github",
+                        releaseType: 'release',
+                    }],
+                    win: {
+                        icon: "./app/assets/images/icon/icon.ico",
+                        target: [{
+                            target: "nsis",
+                            arch: "x64"
+                        },
+                        {
+                            target: "nsis",
+                            arch: "arm64"
+                        }]
+                    },
+                    nsis: {
+                        oneClick: true,
+                        allowToChangeInstallationDirectory: false,
+                        createDesktopShortcut: true,
+                        runAfterFinish: true
+                    },
+                    mac: {
+                        icon: "./app/assets/images/icon/icon.icns",
+                        category: "public.app-category.games",
+                        identity: null,
+                        hardenedRuntime: false,
+                        gatekeeperAssess: false,
+                        mergeASARs: true,
+                        target: [{
+                            target: "dmg",
+                            arch: "universal"
+                        },
+                        {
+                            target: "zip",
+                            arch: "universal"
+                        }]
+                    },
+                    dmg: {
+                        sign: false,
+                        contents: [
+                            { x: 130, y: 220 },
+                            { x: 410, y: 220, type: 'link', path: '/Applications' }
+                        ],
+                        artifactName: "${productName}-mac-${arch}.${ext}",
+                        format: "ULFO"
+                    },
+                    linux: {
+                        icon: "./app/assets/images/icon/icon.png",
+                        target: [{
+                            target: "AppImage",
+                            arch: "x64"
+                        }]
+                    }
                 }
-            }
-        }).then(() => {
+            })
             console.log('le build est terminé')
-        }).catch(err => {
+        } catch (err) {
             console.error('Error during build!', err)
-        })
+            process.exit(1) // fait échouer le job GitHub si le build ou l'upload plante
+        }
     }
 
     getFiles(path, file = []) {
@@ -162,4 +167,7 @@ class Index {
     }
 }
 
-new Index().init();
+new Index().init().catch(err => {
+    console.error(err)
+    process.exit(1)
+});
