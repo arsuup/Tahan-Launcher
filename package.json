@@ -1,12 +1,12 @@
 {
     "name": "Tahan-Launcher",
     "preductname": "Tahan Launcher",
-    "version": "1.2",
+    "version": "1.2.01",
     "description": "Launcher Mincraft pour serveur minecraft privé entre amis",
     "main": "src/app.js",
     "author": {
         "name": "Arsuup",
-        "email": "prod@arsuup.fr",
+        "email": "mail@arsuup.fr",
         "url": "https://github.com/arsuup"
     },
     "url": "https://launcher.arsuup.fr",
