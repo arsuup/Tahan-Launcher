@@ -24,6 +24,8 @@ jobs:
           name: release v${{ env.version }}
           draft: false
           prerelease: ${{ contains(env.version, 'beta') || contains(env.version, 'alpha') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-launcher:
     needs: create-release
@@ -53,5 +55,7 @@ jobs:
         shell: bash
 
       - name: Build and publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run build
         shell: bash
